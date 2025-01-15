@@ -19,11 +19,16 @@ describe("counter", () => {
       })
       .signers([counterAccount])
       .rpc({ skipPreflight: true });
+
+    const accountData = await program.account.counter.fetch(
+        counterAccount.publicKey,
+      );
+
     console.log("Your transaction signature", tx);
-    console.log("Count:", tx);
+    console.log("Count:", accountData.count);
   });
 
-  it("Is initialized!", async () => {
+  it("Increment!", async () => {
     // Add your test here.
     const tx = await program.methods.increment()
       .accounts({
@@ -35,6 +40,6 @@ describe("counter", () => {
         counterAccount.publicKey,
       );
     console.log("Your transaction signature", tx);
-    console.log("Count:", tx);
+    console.log("Count:", accountData.count);
   });
 });
