@@ -8,11 +8,14 @@ seeds = true
 [programs.localnet]
 counter = "GoDnEL46NJ6xBvyjn4QFRmYXBAQm1vvWgnPwZXBSWgs5"
 
+[programs.devnet]
+counter = "GoDnEL46NJ6xBvyjn4QFRmYXBAQm1vvWgnPwZXBSWgs5"
+
 [registry]
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "Localnet"
+cluster = "devnet"
 wallet = "~/.config/solana/id.json"
 
 [scripts]
