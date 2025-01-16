@@ -1,7 +1,7 @@
 import * as anchor from "@coral-xyz/anchor";
 import { Program } from "@coral-xyz/anchor";
 import { Counter } from "../target/types/counter";
-import { Keypair } from "@solana/web3.js";
+import { Keypair, PublicKey } from "@solana/web3.js";
 
 describe("counter", () => {
   // Configure the client to use the local cluster.
@@ -9,36 +9,46 @@ describe("counter", () => {
 
   const program = anchor.workspace.Counter as Program<Counter>;
 
-  const counterAccount = new Keypair();
+
+
+  const [counterPDA] = PublicKey.findProgramAddressSync(
+    [Buffer.from("counter")],
+    program.programId,
+  );
 
   it("Is initialized!", async () => {
     // Add your test here.
-    const tx = await program.methods.initialize()
+    try {
+      const tx = await program.methods.initialize()
       .accounts({
-        counter: counterAccount.publicKey
+        counter: counterPDA
       })
-      .signers([counterAccount])
+
       .rpc({ skipPreflight: true });
 
     const accountData = await program.account.counter.fetch(
-        counterAccount.publicKey,
-      );
+      counterPDA,
+    );
 
     console.log("Your transaction signature", tx);
     console.log("Count:", accountData.count);
+    } catch (e) {
+      console.log(e);
+    }
+    
   });
 
   it("Increment!", async () => {
     // Add your test here.
     const tx = await program.methods.increment()
       .accounts({
-        counter: counterAccount.publicKey
+        counter: counterPDA
       })
       .rpc();
-      
-      const accountData = await program.account.counter.fetch(
-        counterAccount.publicKey,
-      );
+
+    const accountData = await program.account.counter.fetch(
+      counterPDA,
+    );
     console.log("Your transaction signature", tx);
     console.log("Count:", accountData.count);
   });

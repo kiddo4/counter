@@ -8,7 +8,9 @@ pub mod counter {
 
     pub fn initialize(ctx: Context<Initialize>) -> Result<()> {
         let counter = &mut ctx.accounts.counter;
+        counter.bump = ctx.bumps.counter;
         msg!("Counter account created! Current count: {}", counter.count);
+        msg!("Counter bump {}", counter.bump);
 
         Ok(())
     }
@@ -31,8 +33,10 @@ pub struct Initialize<'info> {
 
     #[account(
         init,
+        seeds = [b"counter"],
+        bump,
         payer = user,
-        space = 8 + 8
+        space = 8 + Counter::INIT_SPACE
     )]
 
     pub counter: Account<'info, Counter>,
@@ -41,12 +45,17 @@ pub struct Initialize<'info> {
 
 #[derive(Accounts)]
 pub struct Increment<'info> {
-    #[account(mut)]
+    #[account(mut,
+        seeds = [b"counter"], 
+        bump = counter.bump,
+    )]
     pub counter: Account<'info, Counter>,
 }
 
 
 #[account]
+#[derive(InitSpace)]
 pub struct Counter {
     pub count: u64,
+    pub bump: u8,
 }

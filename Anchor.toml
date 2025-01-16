@@ -3,6 +3,7 @@
 [features]
 resolution = true
 skip-lint = false
+seeds = true
 
 [programs.localnet]
 counter = "GoDnEL46NJ6xBvyjn4QFRmYXBAQm1vvWgnPwZXBSWgs5"
